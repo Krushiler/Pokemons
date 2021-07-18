@@ -12,4 +12,10 @@ class SearchRepository(private val networkService: NetworkService) {
         return networkService.getPokemonAPI().getPokemonByName(name.lowercase())
             .subscribeOn(Schedulers.io())
     }
+
+    public fun searchPokemonById(id : Int) : Single<Pokemon>{
+        return networkService.getPokemonAPI().getPokemonById(id)
+            .subscribeOn(Schedulers.io())
+    }
+
 }

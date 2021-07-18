@@ -19,7 +19,7 @@ val navigationModule = module {
 
 val viewModelsModule = module {
     viewModel { SearchViewModel(get(), get()) }
-    viewModel { RandomViewModel(get()) }
+    viewModel { RandomViewModel(get(), get()) }
     viewModel { MenuViewModel(get(), get()) }
     viewModel { FavouriteViewModel(get()) }
 }

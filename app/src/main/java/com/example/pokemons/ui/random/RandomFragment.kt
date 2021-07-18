@@ -4,9 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.ProgressBar
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.example.pokemons.R
+import com.example.pokemons.ui.GlideApp
+import com.example.pokemons.ui.PokemonPreView
 import com.example.pokemons.ui.search.SearchFragment
 import com.example.pokemons.ui.search.SearchViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -32,9 +37,46 @@ class RandomFragment : Fragment() {
 
     lateinit var toolbar: Toolbar
 
+    lateinit var resultLayout : LinearLayout
+    lateinit var loadingPB : ProgressBar
+    lateinit var getPokemonBTN : Button
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         toolbar = view.findViewById(R.id.toolbar)
         toolbar.setNavigationOnClickListener { activity?.onBackPressed() }
+
+        resultLayout = view.findViewById(R.id.resultLayout)
+        loadingPB = view.findViewById(R.id.loadingPB)
+        getPokemonBTN = view.findViewById(R.id.getRandomPokemonBTN)
+
+        var pokemonPreView = PokemonPreView(requireActivity().applicationContext)
+        resultLayout.addView(pokemonPreView)
+
+        viewModel.getRandomPokemon()
+
+        getPokemonBTN.setOnClickListener { viewModel.getRandomPokemon() }
+
+        viewModel.foundPokemon.observe(viewLifecycleOwner){
+
+            pokemonPreView.nameTV.text = it.name
+
+            GlideApp.with(activity?.applicationContext!!)
+                .load(it.pokemonSprites.imageSource)
+                .into(pokemonPreView.image)
+
+            pokemonPreView.informationTV.text = it.getInformationString()
+        }
+
+        viewModel.isLoading.observe(viewLifecycleOwner){
+            if (it){
+                resultLayout.visibility = View.GONE
+                loadingPB.visibility = View.VISIBLE
+            }else{
+                resultLayout.visibility = View.VISIBLE
+                loadingPB.visibility = View.GONE
+            }
+        }
+
     }
 }

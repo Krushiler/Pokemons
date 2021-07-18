@@ -70,8 +70,6 @@ class SearchFragment : Fragment() {
             }
         }
 
-
-
         viewModel.foundPokemon.observe(viewLifecycleOwner){
 
             pokemonPreView.nameTV.text = it.name
