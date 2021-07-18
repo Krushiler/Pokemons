@@ -8,7 +8,11 @@ data class Pokemon(
     @SerializedName("name") val name:String,
     @SerializedName("sprites") val pokemonSprites: PokemonSprites,
     @SerializedName("weight") val weight: Int
-)
+){
+    public fun getInformationString():String{
+        return "Base experience: $baseExperience\nHeight: $height\nWeight: $weight"
+    }
+}
 
 data class PokemonSprites(
     @SerializedName("front_default") val imageSource:String

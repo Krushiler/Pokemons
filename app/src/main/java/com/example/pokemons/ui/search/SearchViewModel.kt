@@ -18,16 +18,21 @@ class SearchViewModel(application: Application, private val repository: SearchRe
 
     val foundPokemon : MutableLiveData<Pokemon> = MutableLiveData()
     val isFoundPokemon : MutableLiveData<Boolean> = MutableLiveData(false)
+    val isLoading : MutableLiveData<Boolean> = MutableLiveData(false)
+
     val searchDisposable = CompositeDisposable()
 
     public fun searchPokemonByName(name: String){
-        searchDisposable.clear() 
+        searchDisposable.clear()
+        isLoading.postValue(true)
         val disposable = repository.searchPokemonByName(name)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
+                isLoading.postValue(false)
                 foundPokemon.postValue(it)
                 isFoundPokemon.postValue(true)
             },{
+                isLoading.postValue(false)
                 isFoundPokemon.postValue(false)
             })
         searchDisposable.add(disposable)

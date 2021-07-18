@@ -17,12 +17,14 @@ class PokemonPreView@JvmOverloads constructor(
 
     val nameTV : TextView
     val image : ImageView
+    val informationTV : TextView
 
     init {
         LayoutInflater.from(context).inflate(R.layout.pokemon_item, this, true)
 
         nameTV = findViewById(R.id.pokemonNameTV)
         image = findViewById(R.id.pokemonImageView)
+        informationTV = findViewById(R.id.pokemonInformationTV)
 
     }
 
