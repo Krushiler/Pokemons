@@ -1,20 +1,15 @@
 package com.example.pokemons.ui.search
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.example.pokemons.data.model.Pokemon
-import com.example.pokemons.data.repository.SearchRepository
-import io.reactivex.Observable
-import io.reactivex.Observer
-import io.reactivex.SingleObserver
+import com.example.pokemons.data.repository.Repository
+import com.example.pokemons.di.viewModelsModule
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
-import org.reactivestreams.Subscriber
 
-class SearchViewModel(application: Application, private val repository: SearchRepository) : AndroidViewModel(application) {
+class SearchViewModel(application: Application, private val repository: Repository) : AndroidViewModel(application) {
 
     val foundPokemon : MutableLiveData<Pokemon> = MutableLiveData()
     val isFoundPokemon : MutableLiveData<Boolean> = MutableLiveData(false)
@@ -22,15 +17,24 @@ class SearchViewModel(application: Application, private val repository: SearchRe
 
     val searchDisposable = CompositeDisposable()
 
-    public fun searchPokemonByName(name: String){
+    fun searchPokemonByName(name: String){
         searchDisposable.clear()
         isLoading.postValue(true)
         val disposable = repository.searchPokemonByName(name)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
+                val pokemon = it
                 isLoading.postValue(false)
-                foundPokemon.postValue(it)
                 isFoundPokemon.postValue(true)
+                repository.isPokemonFavourite(it.id).observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ isFound ->
+                        pokemon.isFavourite = isFound
+                        foundPokemon.postValue(pokemon)
+                    },{
+                        pokemon.isFavourite = false
+                        foundPokemon.postValue(pokemon)
+                    })
+
             },{
                 isLoading.postValue(false)
                 isFoundPokemon.postValue(false)
@@ -38,6 +42,17 @@ class SearchViewModel(application: Application, private val repository: SearchRe
         searchDisposable.add(disposable)
     }
 
+    fun savePokemonToFavourite(pokemon: Pokemon){
+        repository.addToFavourite(pokemon.id)
+    }
 
+    fun deletePokemonFromFavourite(pokemon: Pokemon){
+        repository.deleteFromFavourite(pokemon.id)
+    }
+
+    override fun onCleared() {
+        searchDisposable.dispose()
+        super.onCleared()
+    }
 
 }

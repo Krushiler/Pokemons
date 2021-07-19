@@ -17,6 +17,7 @@ import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.module.AppGlideModule
 import com.example.pokemons.R
+import com.example.pokemons.data.model.Pokemon
 import com.example.pokemons.ui.GlideApp
 import com.example.pokemons.ui.PokemonPreView
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -48,10 +49,10 @@ class SearchFragment : Fragment() {
     lateinit var notFoundTV : TextView
     lateinit var loadingPB : ProgressBar
 
+    var currentPokemon:Pokemon? = null
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
 
         toolbar = view.findViewById(R.id.toolbar)
         toolbar.setNavigationOnClickListener { activity?.onBackPressed() }
@@ -71,6 +72,7 @@ class SearchFragment : Fragment() {
         }
 
         viewModel.foundPokemon.observe(viewLifecycleOwner){
+            currentPokemon = it
 
             pokemonPreView.nameTV.text = it.name
 
@@ -80,6 +82,7 @@ class SearchFragment : Fragment() {
 
 
             pokemonPreView.informationTV.text = it.getInformationString()
+            pokemonPreView.favouriteToggle.isChecked = it.isFavourite
         }
 
         viewModel.isFoundPokemon.observe(viewLifecycleOwner){
@@ -102,6 +105,13 @@ class SearchFragment : Fragment() {
             }
         }
 
+        pokemonPreView.favouriteToggle.setOnCheckedChangeListener { compoundButton, b ->
+            if (b){
+                viewModel.savePokemonToFavourite(currentPokemon!!)
+            }else{
+                viewModel.deletePokemonFromFavourite(currentPokemon!!)
+            }
+        }
     }
 
 

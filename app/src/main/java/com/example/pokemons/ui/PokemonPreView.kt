@@ -3,10 +3,7 @@ package com.example.pokemons.ui
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import com.example.pokemons.R
 
 class PokemonPreView@JvmOverloads constructor(
@@ -18,6 +15,7 @@ class PokemonPreView@JvmOverloads constructor(
     val nameTV : TextView
     val image : ImageView
     val informationTV : TextView
+    val favouriteToggle : ToggleButton
 
     init {
         LayoutInflater.from(context).inflate(R.layout.pokemon_item, this, true)
@@ -25,6 +23,7 @@ class PokemonPreView@JvmOverloads constructor(
         nameTV = findViewById(R.id.pokemonNameTV)
         image = findViewById(R.id.pokemonImageView)
         informationTV = findViewById(R.id.pokemonInformationTV)
+        favouriteToggle = findViewById(R.id.favouriteToggleButton)
 
     }
 

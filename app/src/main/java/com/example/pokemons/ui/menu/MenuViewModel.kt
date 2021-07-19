@@ -17,15 +17,15 @@ class MenuViewModel(application: Application, private val router: Router) : Andr
         router.navigateTo(screenToNavigate)
     }
 
-    public fun goToSearch(){
+    fun goToSearch(){
         navigateToScreen(Screens.SearchScreen())
     }
 
-    public fun goToRandom(){
+    fun goToRandom(){
         navigateToScreen(Screens.RandomScreen())
     }
 
-    public fun goToFavourite(){
+    fun goToFavourite(){
         navigateToScreen(Screens.FavouriteScreen())
     }
 
